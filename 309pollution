@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+
+import sys
+from math import factorial
+
+#####################################################
+
+def bezier_surface(x, y, grid, degree):
+	pollution = 0
+	for i in range(degree + 1):
+		for j in range(degree + 1):
+			v = bernstein_polynomial(degree, i, y)
+			v *= bernstein_polynomial(degree, j, x)
+			v *= grid[i][j]
+			pollution += v
+	return pollution
+
+#####################################################
+
+def bernstein_polynomial(n, k, p):
+	b = int(factorial(n) / (factorial(k) * factorial(n - k)))
+	pk = (pow(p, k) if k != 0 else 1)
+	pnk = (pow((1 - p), (n - k)) if (n - k) != 0 else 1)
+	return b * pk * pnk
+
+#####################################################
+
+def bezier(size, filepath, x, y):
+	if size <= 0:
+		exit(84)
+	try:
+		x /= size - 1
+		y /= size - 1
+		if x < 0 or x > size - 2 or y < 0 or y > size - 2:
+			exit(84)
+	except:
+		exit(84)
+	grid = create_grid_from_file(filepath, size)
+	return x, y, grid, size - 1
+
+#####################################################
+
+def create_grid_from_file(filepath, size):
+	try:
+		file = open(filepath, "r")
+		content = file.read()
+		lines = list(filter(None, content.split("\n")))
+		points_list = [list(map(int, p.split(";"))) for p in lines]
+	except:
+		exit(84)
+	grid = []
+	for _ in range(0, size):
+		grid.append([0] * size)
+	for point in points_list:
+		if point[0] < 0 or point[0] > size - 1 or point[1] < 0 or point[1] > size - 1:
+			exit(84)
+		grid[point[1]][point[0]] = point[2]
+	return grid
+
+#####################################################
+
+if __name__ == "__main__":
+	if (len(sys.argv) == 5):
+		try:
+			x, y, grid, degree = bezier(int(sys.argv[1]), sys.argv[2], float(sys.argv[3]), float(sys.argv[4]))
+			pollution = bezier_surface(x, y, grid, degree)
+			print(f"{pollution:.2f}")
+			exit(0)
+		except:
+			exit(84)
+	elif (len(sys.argv) == 2):
+		if (sys.argv[1] == "-h"):
+			print ("USAGE\n\t./309pollution n file x y\n\nDESCRIPTION\n\tn\tnumber of points on the grid axis\n\tfile\tcsv file containing the data points x;y;p\n\tx\tabscissa of the point whose pollution level we want to know\n\t y\torder of the point whose pollution level we want to know")
+			exit(0)
+	exit(84)
