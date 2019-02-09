@@ -65,9 +65,9 @@ if __name__ == "__main__":
 			x, y, grid, degree = bezier(int(sys.argv[1]), sys.argv[2], float(sys.argv[3]), float(sys.argv[4]))
 			pollution = bezier_surface(x, y, grid, degree)
 			print(f"{pollution:.2f}")
-			exit(0)
 		except:
 			exit(84)
+		exit(0)
 	elif (len(sys.argv) == 2):
 		if (sys.argv[1] == "-h"):
 			print ("USAGE\n\t./309pollution n file x y\n\nDESCRIPTION\n\tn\tnumber of points on the grid axis\n\tfile\tcsv file containing the data points x;y;p\n\tx\tabscissa of the point whose pollution level we want to know\n\t y\torder of the point whose pollution level we want to know")
